@@ -11,20 +11,20 @@ import './Crowdsale.sol';
 contract Token is ERC20Interface {
 	// YOUR CODE HERE
 	uint256 constant private MAX_UINT256 = 2**256 - 1;
-	mapping(address => uint) balance; //units are tokens
+	uint256 initialNumTokens;
+	mapping(address => uint) balances; //units are tokens
 	mapping (address => mapping (address => uint256)) public allowed;
 	
-	function Token(uint256 initialNumTokens, uint8 _decimalUnits) public {
-        balance[msg.sender] = _initialAmount;               // Give the creator all initial tokens
-        totalSupply = _initialAmount;                        // Update total supply
-        name = _tokenName;                                   // Set the name for display purposes
-        decimals = _decimalUnits;                            // Amount of decimals for display purposes
-        symbol = _tokenSymbol;                               // Set the symbol for display purposes
+	function Token(uint256 _initialNumTokens) public {
+		initialNumTokens = _initialNumTokens;
+        balances[msg.sender] = _initialNumTokens;               // Give the creator all initial tokens
+        totalSupply = initialNumTokens;                        // Update total supply
+       
     }
 
 	// Get the account balance of another account with address _owner
 	function balanceOf(address _owner) constant returns (uint256 balance) {
-		return balance[_owner];
+		return balances[_owner];
 	}
 
 	function addTokens(uint amount) public returns (bool success){
@@ -49,9 +49,9 @@ contract Token is ERC20Interface {
 
 	// Send _value amount of tokens to address _to
 	function transfer(address _to, uint256 _value) returns (bool success) {
-		if(balance[msg.sender] >= _value){
-			balance[msg.sender] -= _value;
-        	balance[_to] += _value;
+		if(balances[msg.sender] >= _value){
+			balances[msg.sender] -= _value;
+        	balances[_to] += _value;
         	Transfer(msg.sender, _to, _value);
         	return true;
 		}
@@ -63,9 +63,9 @@ contract Token is ERC20Interface {
 	function transferFrom(address _from, address _to, uint256 _value) returns (bool success){
 		uint256 allowance = allowed[_from][msg.sender];
 
-        if(balance[_from] >= _value && allowance >= _value){
-        	balance[_to] += _value;
-        	balance[_from] -= _value;
+        if(balances[_from] >= _value && allowance >= _value){
+        	balances[_to] += _value;
+        	balances[_from] -= _value;
         	if (allowance < MAX_UINT256) {
             	allowed[_from][msg.sender] -= _value;
         	}

@@ -9,7 +9,7 @@ pragma solidity ^0.4.15;
 
 contract Queue {
 	/* State variables */
-	uint8 size = 5;
+	uint8 size;
 	uint time;
 	uint8 numOccupied;
 	// YOUR CODE HERE
@@ -24,6 +24,7 @@ contract Queue {
 		queue = new address[](size);
 		time = now;
 		numOccupied = 0;
+		size = 5;
 	}
 
 	/* Returns the number of people waiting in line */
