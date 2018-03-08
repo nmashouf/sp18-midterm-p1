@@ -19,13 +19,13 @@ contract Crowdsale {
 	uint tokensPerWei;
 	uint tokensSold;
 	uint totalSupply;
-	uint private fundsRaised;
+	uint private fundsRaised; //units are wei
 	address public owner;
 	bool crowdsaleClosed = false;
 
 
 
-	mapping(address => uint) balanceOf;
+	mapping(address => uint) balanceOf; //units are tokens
 	Token public token;
 	Queue public queue;
 
@@ -79,14 +79,22 @@ contract Crowdsale {
 
 	function buyTokens(uint _numTokens) {
 		if (msg.sender == queue.getFirst() && queue.qsize() > 1) {
-			tokenSold += amount;
+			tokensSold += _numTokens;
 			balanceOf[msg.sender] += _numTokens;
 			tokensSold += _numTokens;
-			fundsRaised += msg.value;
-
+			fundsRaised += _numTokens/tokensPerWei;
 		}
-
 	}
+
+	function refundTokens(uint _numTokens) {
+		if (balanceOf[msg.sender] > 0){
+			balanceOf[msg.sender] -= _numTokens;
+			msg.sender.transfer(_numTokens/tokensPerWei);
+			funds -= _numTokens/tokensPerWei;
+			TokenRefund(msg.sender);
+		}
+	}
+
 	// Events 
 	event TokenPurchase(address buyer);
 	event TokenRefund(address buyer);
