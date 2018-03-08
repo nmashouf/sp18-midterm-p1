@@ -29,11 +29,11 @@ contract Crowdsale {
 	Token public token;
 	Queue public queue;
 
-	function Crowdsale(uint _endtime, uint _initialNumTokens, uint _tokensPerWei, ) {
+	function Crowdsale(uint _endtime, uint _initialNumTokens, uint _tokensPerWei) {
 		owner = msg.sender;
 		endTime = _endtime;
 		initialNumTokens = _initialNumTokens;
-		totalSupply = _initialNumTokens
+		totalSupply = _initialNumTokens;
 		tokensPerWei = _tokensPerWei;
 		crowdsaleStarted = true;
 
@@ -56,7 +56,9 @@ contract Crowdsale {
 	}
 
 	modifier abletoBurn() {
-		if(totalSupply < msg.value);
+		if(totalSupply < msg.value){
+			return;
+		}
 		_;
 	}
 
@@ -92,6 +94,8 @@ contract Crowdsale {
 			balanceOf[msg.sender] += _numTokens;
 			tokensSold += _numTokens;
 			fundsRaised += _numTokens/tokensPerWei;
+			queue.dequeue(msg.sender);
+			TokenPurchase(msg.sender);
 		}
 	}
 
