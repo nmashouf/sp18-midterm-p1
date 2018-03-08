@@ -18,6 +18,8 @@ contract Crowdsale {
 	uint initialNumTokens;
 	uint tokensPerWei;
 	uint tokensSold;
+	uint totalSupply;
+	uint private fundsRaised;
 	address public owner;
 	bool crowdsaleClosed = false;
 
@@ -29,8 +31,9 @@ contract Crowdsale {
 
 	function Crowdsale(uint _endtime, uint _initialNumTokens, uint _tokensPerWei, ) {
 		owner = msg.sender;
-		endtime = _endtime;
+		endTime = _endtime;
 		initialNumTokens = _initialNumTokens;
+		totalSupply = _initialNumTokens
 		tokensPerWei = _tokensPerWei;
 
 	}
@@ -67,8 +70,8 @@ contract Crowdsale {
 	}
 
 	function withdrawWhenClosed() requireOwner(){
-		if crowdsaleClosed{
-			transfer
+		if (now > endTime){
+			owner.transfer(fundsRaised);
 		}
 	}
 
@@ -77,11 +80,16 @@ contract Crowdsale {
 	function buyTokens(uint _numTokens) {
 		if (msg.sender == queue.getFirst() && queue.qsize() > 1) {
 			tokenSold += amount;
+			balanceOf[msg.sender] += _numTokens;
+			tokensSold += _numTokens;
+			fundsRaised += msg.value;
 
 		}
 
 	}
-
+	// Events 
+	event TokenPurchase(address buyer);
+	event TokenRefund(address buyer);
 
 
 }
