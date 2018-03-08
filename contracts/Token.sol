@@ -1,7 +1,7 @@
 pragma solidity ^0.4.15;
 
 import './interfaces/ERC20Interface.sol';
-
+import '.Crowdsale.sol';
 /**
  * @title Token
  * @dev Contract that implements ERC20 token standard
@@ -11,19 +11,34 @@ import './interfaces/ERC20Interface.sol';
 contract Token is ERC20Interface {
 	// YOUR CODE HERE
 	// Get the total token supply
-	function totalSupply() constant returns (uint256 totalSupply);
+	function totalSupply() constant returns (uint256 totalSupply) {
+		return totalSupplyVal;
+	}
 
 	// Get the account balance of another account with address _owner
 	function balanceOf(address _owner) constant returns (uint256 balance);
 
 	function addTokens(uint amount) public returns (bool success){
-		totalSupply += amount;
-		return true;
+		var bal = totalSupply();
+		var newBal = bal + amount;
+		if( newBal > bal) {
+			bal = newBal;
+			return true;
+		} else {
+			return false;
+		}
+		
 	}
 
 	function burnTokens(uint amount) public returns (bool success){
-		totalSupply -= amount;
-		return true;
+		var bal = totalSupply();
+		if(bal >= amount){
+			bal -= amount;
+			return true;
+		} else {
+			return false;
+		}
+		
 	}
 
 	// Send _value amount of tokens to address _to

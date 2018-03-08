@@ -10,10 +10,10 @@ pragma solidity ^0.4.15;
 contract Queue {
 	/* State variables */
 	uint8 size = 5;
-	unint time;
+	uint time;
 	uint8 numOccupied;
 	// YOUR CODE HERE
-	address[] memory queue;
+	address[] queue;
 
 	/* Add events */
 	// YOUR CODE HERE
@@ -29,6 +29,10 @@ contract Queue {
 	/* Returns the number of people waiting in line */
 	function qsize() constant returns(uint8) {
 		return numOccupied;
+	}
+
+	function size() constant returns(uint8) {
+		return size;
 	}
 
 	/* Returns whether the queue is empty or not */
@@ -60,8 +64,12 @@ contract Queue {
 	 */
 	function checkTime() {
 		/* our limit to be in front is an hour */
-		if (now - time > 60 * minutes || now - time < -60):
+		int256 hour = 60;
+		int256 hour2 = -60;
+		int256 diff = (int256) (now - time);
+		if (diff > hour || diff < hour2){
 			dequeue();
+		}
 	}
 	
 	/* Removes the first person in line; either when their time is up or when
@@ -81,14 +89,10 @@ contract Queue {
 
 	/* Places `addr` in the first empty position in the queue */
 	function enqueue(address addr) {
-		var msg = "The queue is Full, Please try again later!";
-		event listFull(msg);
 		if(numOccupied != queue.length) {
 			queue[numOccupied] = addr;
 				numOccupied += 1;
-		} else {
-			/*Not sure if printing like this works at all*/
-			listFull(msg);
 		}
 	}
+
 }
