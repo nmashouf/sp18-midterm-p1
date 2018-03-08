@@ -21,7 +21,7 @@ contract Crowdsale {
 	uint totalSupply;
 	uint private fundsRaised; //units are wei
 	address public owner;
-	bool crowdsaleClosed = false;
+	bool crowdsaleStarted = false;
 
 
 
@@ -35,8 +35,11 @@ contract Crowdsale {
 		initialNumTokens = _initialNumTokens;
 		totalSupply = _initialNumTokens
 		tokensPerWei = _tokensPerWei;
+		crowdsaleStarted = true;
 
 	}
+
+	//MODIFIERS
 
 	modifier requireOwner() {
 		if (msg.sender != owner) {
@@ -46,18 +49,24 @@ contract Crowdsale {
 	}
 
 	modifier withinTime() {
-		if (now < startTime || now > endTime){
+		if (!crowdsaleStarted || now > endTime){
 			return;
 		}
 		_;
 	}
 
 	modifier abletoBurn() {
-		require(totalSupply() > msg.value);
+		if(totalSupply < msg.value);
 		_;
 	}
 
-	// Owner only
+	modifier saleOpen() {
+		if (now > endTime){
+			return;
+		}
+		_;
+	}
+	// OWNER only
 
 	//add new tokens to totalSupply
 	function mint(uint _numNewTokens) requireOwner() {
@@ -75,9 +84,9 @@ contract Crowdsale {
 		}
 	}
 
-	//Buyers
+	//BUYERS
 
-	function buyTokens(uint _numTokens) {
+	function buyTokens(uint _numTokens) public saleOpen() {
 		if (msg.sender == queue.getFirst() && queue.qsize() > 1) {
 			tokensSold += _numTokens;
 			balanceOf[msg.sender] += _numTokens;
@@ -86,13 +95,21 @@ contract Crowdsale {
 		}
 	}
 
-	function refundTokens(uint _numTokens) {
+	function refundTokens(uint _numTokens) public saleOpen() {
 		if (balanceOf[msg.sender] > 0){
 			balanceOf[msg.sender] -= _numTokens;
 			msg.sender.transfer(_numTokens/tokensPerWei);
 			funds -= _numTokens/tokensPerWei;
 			TokenRefund(msg.sender);
 		}
+	}
+
+	function joinQueue() public saleOpen() returns (bool success) {
+		if(queue.qsize() < queue.size) {
+			queue.enqueue(msg.sender);
+			return true;
+		}
+		return false;
 	}
 
 	// Events 
