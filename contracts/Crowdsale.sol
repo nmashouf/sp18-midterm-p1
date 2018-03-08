@@ -15,17 +15,14 @@ contract Crowdsale {
 	// YOUR CODE HERE
 	//keep track of number tokens sold, start & end time, 
 	uint endTime;
-	uint initialNumTokens;
+	
 	uint tokensPerWei;
 	uint tokensSold;
-	uint totalSupply;
 	uint private fundsRaised; //units are wei
 	address public owner;
 	bool crowdsaleStarted = false;
 
 
-
-	mapping(address => uint) balanceOf; //units are tokens
 	Token public token;
 	Queue public queue;
 
@@ -103,13 +100,13 @@ contract Crowdsale {
 		if (balanceOf[msg.sender] > 0){
 			balanceOf[msg.sender] -= _numTokens;
 			msg.sender.transfer(_numTokens/tokensPerWei);
-			funds -= _numTokens/tokensPerWei;
+			fundsRaised -= _numTokens/tokensPerWei;
 			TokenRefund(msg.sender);
 		}
 	}
 
 	function joinQueue() public saleOpen() returns (bool success) {
-		if(queue.qsize() < queue.size) {
+		if(queue.qsize() < queue.size()) {
 			queue.enqueue(msg.sender);
 			return true;
 		}
