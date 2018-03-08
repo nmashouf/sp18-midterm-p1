@@ -5,27 +5,27 @@ Welcome to the Blockchain for Developers DeCal's midterm assignment. You'll be d
 
 ###### Project Partner 1
 
-Name:
+Name: Neeka Mashouf
 
-SID:
+SID: 25562201
 
-Email:
+Email: nmashouf@berkeley.edu
 
 ###### Project Partner 2
 
-Name:
+Name: Roham Ghotbi
 
-SID:
+SID: 3032229942
 
-Email:
+Email: rohamghotbi@berkeley.edu
 
 ###### Project Partner 3 (if any)
 
-Name:
+Name: Divi Kumar
 
-SID:
+SID: 24404171
 
-Email:
+Email: dkumar11@berkeley.edu
 
 ## Midterm Instructions
 
